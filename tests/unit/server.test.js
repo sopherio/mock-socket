@@ -1,9 +1,10 @@
 import test from 'ava';
+
+import EventTarget from '../../src/event/target';
+import globalObject from '../../src/helpers/global-object';
+import networkBridge from '../../src/network-bridge';
 import Server from '../../src/server';
 import WebSocket from '../../src/websocket';
-import EventTarget from '../../src/event/target';
-import networkBridge from '../../src/network-bridge';
-import globalObject from '../../src/helpers/global-object';
 
 test('that server inherents EventTarget methods', t => {
   const myServer = new Server('ws://not-real');
@@ -181,4 +182,19 @@ test.cb('that the server socket callback argument is correctly scoped: close met
     myServer.close();
     t.end();
   };
+});
+
+test.cb('that a socket with url parameters can send', t => {
+  const myServer = new Server('ws://not-real/');
+
+  myServer.on('connection', socket => {
+    socket.on('message', data => {
+      t.is(data, '1001');
+      socket.close({ code: 1001 });
+      t.end();
+    });
+  });
+
+  const socket1 = new WebSocket('ws://not-real/?arg=42');
+  socket1.send('1001');
 });

@@ -8,7 +8,7 @@ test.afterEach(() => {
   networkBridge.urlMap = {};
 });
 
-test('that url query parameters are ignored', t => {
+test('that url query parameters are ignored when attaching socket', t => {
   networkBridge.attachServer(fakeObject, 'wss://not-real/');
   networkBridge.attachWebSocket({}, 'wss://not-real/?foo=42');
   networkBridge.attachWebSocket({}, 'wss://not-real/?foo=0');
